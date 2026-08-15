@@ -33,7 +33,7 @@ npm test
 
 ### CI
 
-[.github/workflows/ci.yml](./.github/workflows/ci.yml) 在 push 到 `main` 及所有 PR 上运行，按 Node 20 / 22 / 24 三个版本矩阵执行 `npm ci && npm test`。测试全部自包含（不访问真实 Graylog），因此无需在 GitHub Secrets 中配置任何 Token。
+[.github/workflows/ci.yml](./.github/workflows/ci.yml) 在 push 到 `main` 及所有 PR 上运行，按 Node 22 / 24 两个版本矩阵执行 `npm ci && npm test`。测试全部自包含（不访问真实 Graylog），因此无需在 GitHub Secrets 中配置任何 Token。
 
 ## 凭据与环境变量
 

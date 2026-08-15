@@ -1,0 +1,16 @@
+# Codex MCP 配置示例。
+#
+# 复制到项目级配置（项目根 .codex/config.toml）时，cwd="." 即项目根，
+# 相对路径 --env-file=.env 和 ./dist/index.js 直接可用。
+# 若放进全局 ~/.codex/config.toml，请改成绝对路径或调整 cwd。
+# Secrets 仍由 Node 的 --env-file 从项目根 .env 加载，本文件不包含 Token。
+
+[mcp_servers.graylog_tst]
+command = "node"
+args = ["--env-file=.env", "./dist/index.js", "--profile", "tst"]
+cwd = "."
+
+[mcp_servers.graylog_prd]
+command = "node"
+args = ["--env-file=.env", "./dist/index.js", "--profile", "prd"]
+cwd = "."

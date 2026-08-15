@@ -1,0 +1,24 @@
+{
+  "mcpServers": {
+    "graylog_tst": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "--env-file=${CLAUDE_PROJECT_DIR:-.}/.env",
+        "${CLAUDE_PROJECT_DIR:-.}/dist/index.js",
+        "--profile",
+        "tst"
+      ]
+    },
+    "graylog_prd": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "--env-file=${CLAUDE_PROJECT_DIR:-.}/.env",
+        "${CLAUDE_PROJECT_DIR:-.}/dist/index.js",
+        "--profile",
+        "prd"
+      ]
+    }
+  }
+}

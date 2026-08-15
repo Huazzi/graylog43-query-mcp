@@ -1,0 +1,27 @@
+{
+  "name": "graylog43-query-mcp",
+  "version": "0.1.1",
+  "private": true,
+  "type": "module",
+  "description": "面向 Graylog 4.3 的、按 Stream 限定查询范围的只读 MCP 服务器。",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "tsx src/index.ts",
+    "test": "npm run build && tsx --test test/**/*.test.ts"
+  },
+  "bin": {
+    "graylog-dl": "dist/download.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/server": "^2.0.0",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.0",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
+  }
+}

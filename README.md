@@ -31,6 +31,10 @@ npm test
 
 `npm test` 会先完成 TypeScript 构建，再运行策略测试和 stdio 协议冒烟测试。编译入口为项目根下的 `dist/index.js`。
 
+### CI
+
+[.github/workflows/ci.yml](./.github/workflows/ci.yml) 在 push 到 `main` 及所有 PR 上运行，按 Node 20 / 22 / 24 三个版本矩阵执行 `npm ci && npm test`。测试全部自包含（不访问真实 Graylog），因此无需在 GitHub Secrets 中配置任何 Token。
+
 ## 凭据与环境变量
 
 为正式和非正式环境分别申请只读 API Token。Token 继承所属 Graylog 用户权限，因此 Graylog 用户本身也必须只能读取相应 Stream。
@@ -59,19 +63,25 @@ http://graylog.example.internal:9000
 
 ## 注册到 Claude Code
 
-Claude Code 会自动读取项目根 [.mcp.json](./.mcp.json)，其中已注册两个 stdio server（`graylog_tst` / `graylog_prd`）。凭据仍由 `--env-file` 从项目根 `.env` 加载，`.mcp.json` 不包含任何 Token；路径用 `${CLAUDE_PROJECT_DIR:-.}` 展开为项目根绝对路径，Windows 与 macOS 通用，无需按机器修改。
+推荐用 **`--scope user` 注册一次**，即可在**所有项目**中调用（写入 `~/.claude.json`，仅本机、不入库）。在项目根目录运行：
 
 ```bash
-# 在项目根目录启动 Claude Code 后确认两个 server 已连接
+# $PWD 展开为当前目录绝对路径；注册后任意目录的项目都能用
+claude mcp add --transport stdio --scope user graylog_tst \
+  -- node --env-file="$PWD/.env" "$PWD/dist/index.js" --profile tst
+claude mcp add --transport stdio --scope user graylog_prd \
+  -- node --env-file="$PWD/.env" "$PWD/dist/index.js" --profile prd
+
+# 从任意目录确认两个 server 已连接
 claude mcp list
 ```
 
-两个 server 应显示 `✔ Connected`。改过 `.mcp.json` 后需**重启 Claude Code 会话**才生效；新加入的 server 首次会弹批准提示。
+两个 server 应显示 `✔ Connected`。新加入的 server 首次会弹批准提示；改过配置后需**重启 Claude Code 会话**才生效。
 
-如果不想把配置入库，也可改用 CLI 注册，`--scope project` 会直接生成项目根 `.mcp.json`，`--scope local` 则写入 `~/.claude.json`（仅本人、不入库）：
+如果只想在某个项目内使用、或希望配置随仓库入库（同事 clone 后即可用），则改用 `--scope project`，会写入项目根 [.mcp.json](./.mcp.json)，其中的路径用 `${CLAUDE_PROJECT_DIR:-.}` 展开，Windows 与 macOS 通用，不包含 Token。注意：同一个名字**不要同时**在 user 和 project 两个范围注册，否则 `claude mcp list` 会提示 scope 冲突；保留一个即可（`claude mcp remove <名字> -s <scope>` 删除多余的）。
 
 ```bash
-# 在项目根目录运行；$PWD 展开为当前目录绝对路径
+# 仅本项目使用（随仓库入库）
 claude mcp add --transport stdio --scope project graylog_tst \
   -- node --env-file="$PWD/.env" "$PWD/dist/index.js" --profile tst
 claude mcp add --transport stdio --scope project graylog_prd \
